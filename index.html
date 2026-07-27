@@ -120,7 +120,8 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   <div class="card">
     <div class="card-title">Connection Test</div>
     <div class="card-sub">Use this to confirm the sheet webhook is reachable.</div>
-    <button class="btn-debug" id="btnTestConn">Test Connection</button>
+    <button class="btn-debug" id="btnTestConn">Test Connection (Apps Script)</button>
+    <button class="btn-debug" id="btnTestInternet" style="margin-top:8px;">Test Connection (General Internet)</button>
     <pre id="debugOut"></pre>
   </div>
 
@@ -164,6 +165,26 @@ btnTestConn.addEventListener("click", async () => {
       "FETCH THREW AN ERROR\n" +
       "name: " + err.name + "\n" +
       "message: " + err.message;
+  }
+});
+
+const btnTestInternet = document.getElementById("btnTestInternet");
+btnTestInternet.addEventListener("click", async () => {
+  debugOut.style.display = "block";
+  debugOut.textContent = "Testing general internet connectivity...";
+  try {
+    const resp = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+    const text = await resp.text();
+    debugOut.textContent =
+      "HTTP status: " + resp.status + " " + resp.statusText + "\n\n" +
+      "Response body:\n" + text +
+      "\n\n(If this worked but the Apps Script test didn't, the problem is specific to the Apps Script connection, not your general internet/browser.)";
+  } catch (err) {
+    debugOut.textContent =
+      "GENERAL INTERNET FETCH ALSO FAILED\n" +
+      "name: " + err.name + "\n" +
+      "message: " + err.message +
+      "\n\n(This means the block is broader than just Apps Script — check network/browser settings, VPN, ad blockers, or try a different network/browser.)";
   }
 });
 
